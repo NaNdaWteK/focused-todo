@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+  postgres-focused-todo:
+    image: postgres:14.4
+    container_name: postgres-focused-todo
+    ports:
+      - '5444:5444'
+    expose:
+      - '5444'
+    restart: unless-stopped
+    volumes:
+      - ./databases/postgres/:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=user_name
+      - POSTGRES_PASSWORD=secret-password
+      - POSTGRES_DB=database_name
+      - POSTGRES_PORT=5444
+    networks:
+      - nginxproxy_focused-todo
+    command:
+      - '-p 5444'
+
+networks:
+  nginxproxy_focused-todo:
+    external:
+      name: nginxproxy_focused-todo

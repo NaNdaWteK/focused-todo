@@ -1,0 +1,41 @@
+name: Focused TO DO API Project
+
+on:
+  push:
+    branches: [main, "*/*"]
+  workflow_call:
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    services:
+      postgres:
+        image: postgres:14.4
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PASSWORD: secret-password
+          POSTGRES_USER: user_name
+          POSTGRES_DB: database_name
+          POSTGRES_PORT: 5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Add .env
+        run: cp .env.example .env
+      - name: Launch Test
+        run: yarn test
