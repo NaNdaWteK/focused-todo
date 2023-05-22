@@ -1,3 +1,4 @@
+import { Status } from "../../../__share/interfaces/Status";
 import { ApiError } from "../interfaces/ApiError";
 import CustomError from "../interfaces/CustomError";
 import * as uuid from "./inUse/UUIDGeneratorInUse";
@@ -13,8 +14,11 @@ export default class ErrorResponse implements ApiError {
   private stack: string | undefined;
   private createdAt: string;
 
-  constructor(error: Error | CustomError, serviceStatusCode = 500) {
-    this.errorId = uuid.generate();
+  constructor(
+    error: Error | CustomError,
+    serviceStatusCode = Status.SERVER_ERROR
+  ) {
+    this.errorId = uuid.generateUUID();
     this.message = error.message;
     if (error instanceof CustomError) {
       this.statusCode = error.statusCode ? error.statusCode : serviceStatusCode;

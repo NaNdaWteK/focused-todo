@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { Controllers } from "../../__share/interfaces/Controllers";
+import { Controllers } from "../../../__share/interfaces/Controllers";
 import {
   HttpMethod,
   HttpServer,
-} from "../../__infrastructure/_core/interfaces/HttpServer";
+} from "../../../__infrastructure/_core/interfaces/HttpServer";
 import HealthzAction from "../actions/HealthzAction";
 
 export default class HealthzController implements Controllers {

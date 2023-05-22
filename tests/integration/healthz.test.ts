@@ -1,6 +1,6 @@
 import { Application } from "express";
 import request from "supertest";
-import HealthzAction from "../../src/_healthz/actions/HealthzAction";
+import HealthzAction from "../../src/api/healthz/actions/HealthzAction";
 import server from "../test_support/server";
 
 const SUCCESS = 200;

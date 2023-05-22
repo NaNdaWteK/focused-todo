@@ -1,4 +1,5 @@
 import express, { Application, RequestHandler } from "express";
+import bodyParser from "body-parser";
 import { Server } from "http";
 import { HttpMethod, HttpServer } from "../interfaces/HttpServer";
 import logger from "./inUse/LoggerInUse";
@@ -9,6 +10,7 @@ export default class ExpressServer implements HttpServer {
 
   constructor() {
     this.app = express();
+    this.app.use(bodyParser.json());
   }
 
   add(handlers: (...handlers: unknown[]) => void) {

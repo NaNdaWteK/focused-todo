@@ -1,5 +1,5 @@
 import config from "./__infrastructure/config/default";
-import HealthzController from "./_healthz/controllers/HealthzController";
+import HealthzController from "./api/healthz/controllers/HealthzController";
 import { AppDataSource } from "./__infrastructure/Datasource";
 import server from "./__infrastructure/_core/adapters/inUse/ServerInUse";
 import error from "./__infrastructure/middlewares/ErrorHandler";
@@ -8,6 +8,7 @@ import logInfo from "./__infrastructure/middlewares/LogInfo";
 import logger from "./__infrastructure/_core/adapters/inUse/LoggerInUse";
 import ExpressServer from "./__infrastructure/_core/adapters/ExpressServer";
 import { startCleanLogs } from "./__infrastructure/crons/cleanLogs";
+import TodoController from "./api/todo/controllers/TodoController";
 
 export default class App {
   static async main(): Promise<ExpressServer> {
@@ -27,6 +28,7 @@ export default class App {
     server.add(cors);
     server.add(logInfo);
     new HealthzController().routes(server);
+    new TodoController().routes(server);
     startCleanLogs();
     server.add(error);
   }
