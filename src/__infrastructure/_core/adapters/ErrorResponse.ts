@@ -1,7 +1,7 @@
 import { Status } from "../../../__share/interfaces/Status";
 import { ApiError } from "../interfaces/ApiError";
 import CustomError from "../interfaces/CustomError";
-import * as uuid from "./inUse/UUIDGeneratorInUse";
+import Octopus from "./Octopus";
 
 export default class ErrorResponse implements ApiError {
   private errorId: string;
@@ -13,12 +13,13 @@ export default class ErrorResponse implements ApiError {
   private status: string;
   private stack: string | undefined;
   private createdAt: string;
+  private logger: Octopus["logger"];
 
   constructor(
     error: Error | CustomError,
     serviceStatusCode = Status.SERVER_ERROR
   ) {
-    this.errorId = uuid.generateUUID();
+    this.errorId = new Octopus().withUUIDGenerator().uuid.generateUUID();
     this.message = error.message;
     if (error instanceof CustomError) {
       this.statusCode = error.statusCode ? error.statusCode : serviceStatusCode;

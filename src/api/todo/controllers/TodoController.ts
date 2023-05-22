@@ -9,38 +9,43 @@ import EditTodoAction from "../actions/EditTodoAction";
 import FindTodoAction from "../actions/FindTodoAction";
 import { Todo } from "../../../__share/interfaces/Todo";
 import { Status } from "../../../__share/interfaces/Status";
+import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
 
 export default class TodoController implements Controllers {
   async routes(server: HttpServer) {
-    server.addRoute(HttpMethod.POST, "/api/v1/todo", this.addTodoController());
+    server.addRoute(
+      HttpMethod.POST,
+      "/api/v1/todo",
+      this.addTodoController(new Octopus().withLogger().withUUIDGenerator())
+    );
     server.addRoute(
       HttpMethod.PUT,
       "/api/v1/todo/:id",
-      this.editTodoController()
+      this.editTodoController(new Octopus().withLogger())
     );
     server.addRoute(
       HttpMethod.GET,
       "/api/v1/todo/:id",
-      this.findTodoController()
+      this.findTodoController(new Octopus().withLogger())
     );
   }
-  private addTodoController() {
+  private addTodoController(adapters: Octopus) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const payload: Todo = req.body;
-        const response = await new AddTodoAction().invoke(payload);
+        const response = await new AddTodoAction(adapters).invoke(payload);
         return res.status(Status.CREATED).send(response);
       } catch (error) {
         next(error);
       }
     };
   }
-  private editTodoController() {
+  private editTodoController(adapters: Octopus) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const id = req.params.id;
         const payload = req.body;
-        const response = await new EditTodoAction().invoke(id, payload);
+        const response = await new EditTodoAction(adapters).invoke(id, payload);
         return res.status(Status.SUCCESS).send(response);
       } catch (error) {
         next(error);
@@ -48,11 +53,11 @@ export default class TodoController implements Controllers {
     };
   }
 
-  private findTodoController() {
+  private findTodoController(adapters: Octopus) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const id = req.params.id;
-        const response = await new FindTodoAction().invoke(id);
+        const response = await new FindTodoAction(adapters).invoke(id);
         return res.status(Status.SUCCESS).send(response);
       } catch (error) {
         next(error);

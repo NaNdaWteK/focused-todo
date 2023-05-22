@@ -1,13 +1,15 @@
-import logger from "../../../__infrastructure/_core/adapters/inUse/LoggerInUse";
+import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
 import TodoRepository from "../../../__infrastructure/repositories/TodoRepository";
 
 export default class FindTodoService {
   private repo: TodoRepository;
-  constructor() {
+  private logger: Octopus["logger"];
+  constructor({ logger }: Octopus) {
     this.repo = new TodoRepository();
+    this.logger = logger;
   }
   async execute(id: string) {
-    logger.info("Executing find todo service", { id });
+    this.logger.info("Executing find todo service", { id });
 
     return this.repo.findOne({ id });
   }

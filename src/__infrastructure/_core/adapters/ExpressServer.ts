@@ -2,15 +2,17 @@ import express, { Application, RequestHandler } from "express";
 import bodyParser from "body-parser";
 import { Server } from "http";
 import { HttpMethod, HttpServer } from "../interfaces/HttpServer";
-import logger from "./inUse/LoggerInUse";
+import Octopus from "./Octopus";
 
 export default class ExpressServer implements HttpServer {
   readonly app: Application;
   httpServer: Server;
+  private logger: Octopus["logger"];
 
   constructor() {
     this.app = express();
     this.app.use(bodyParser.json());
+    this.logger = new Octopus().withLogger().logger;
   }
 
   add(handlers: (...handlers: unknown[]) => void) {
@@ -23,13 +25,13 @@ export default class ExpressServer implements HttpServer {
 
   start(port: number): void {
     this.httpServer = this.app.listen(port, () => {
-      logger.info(`Server started on port ${port}`);
+      this.logger.info(`Server started on port ${port}`);
     });
   }
 
   stop(): void {
     this.httpServer.close(() => {
-      logger.info("Server stopped");
+      this.logger.info("Server stopped");
     });
   }
 }

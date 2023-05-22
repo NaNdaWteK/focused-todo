@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import logger from "../_core/adapters/inUse/LoggerInUse";
+import Octopus from "../_core/adapters/Octopus";
 
 const logInfo = (req: Request, res: Response, next: NextFunction) => {
-  logger.info(`(${req.method}) => ${req.headers.host}${req.path}`);
+  new Octopus()
+    .withLogger()
+    .logger.info(`(${req.method}) => ${req.headers.host}${req.path}`);
   next();
 };
 

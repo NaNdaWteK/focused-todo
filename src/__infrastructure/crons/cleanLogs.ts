@@ -1,22 +1,23 @@
 import cron from "node-cron";
 import fs from "fs";
 import path from "path";
-import logger from "../_core/adapters/inUse/LoggerInUse";
 import config from "../config/default";
+import Octopus from "../_core/adapters/Octopus";
 
 const logsDirectory = path.join(process.cwd(), "logs");
 const daysInMilliseconds =
   parseInt(config.daysToDeleteLogFiles) * 24 * 60 * 60 * 1000;
 
 export function startCleanLogs() {
+  const logger = new Octopus().withLogger().logger;
   const everyDayAt10 = "0 10 * * *";
   cron.schedule(everyDayAt10, () => {
-    deleteOneMonthAgoLogs();
+    deleteOneMonthAgoLogs(logger);
   });
   logger.info("Rotation logs has been started");
 }
 
-function deleteOneMonthAgoLogs() {
+function deleteOneMonthAgoLogs(logger: Octopus["logger"]) {
   logger.info("Deleting old log files");
   const currentDate = new Date();
 
@@ -28,7 +29,7 @@ function deleteOneMonthAgoLogs() {
       menor: daysInMilliseconds,
     });
     if (isForDelete()) {
-      deleteFile(filePath);
+      deleteFile(logger, filePath);
     }
 
     function isForDelete() {
@@ -44,7 +45,7 @@ function getFileCreationTime(filePath: string) {
   return fileCreationTime;
 }
 
-function deleteFile(filePath: string) {
+function deleteFile(logger: Octopus["logger"], filePath: string) {
   fs.unlinkSync(filePath);
   logger.info(`Deleted old log file: ${filePath}`);
 }
