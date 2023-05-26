@@ -51,4 +51,10 @@ describe("Todo", () => {
     expect(response.body.level).toBe("hard");
     expect(response.body.date).toBe(ISODate);
   });
+  it("can be delete", async () => {
+    const response = await request(app).delete(`/api/v1/todo/${todoId}`);
+
+    expect(response.statusCode).toBe(Status.SUCCESS);
+    expect(response.body.affected).toBe(1);
+  });
 });

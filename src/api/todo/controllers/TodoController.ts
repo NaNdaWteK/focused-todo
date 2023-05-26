@@ -7,6 +7,7 @@ import {
 import AddTodoAction from "../actions/AddTodoAction";
 import EditTodoAction from "../actions/EditTodoAction";
 import FindTodoAction from "../actions/FindTodoAction";
+import DeleteTodoAction from "../actions/DeleteTodoAction";
 import { Todo } from "../../../__share/interfaces/Todo";
 import { Status } from "../../../__share/interfaces/Status";
 import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
@@ -27,6 +28,11 @@ export default class TodoController implements Controllers {
       HttpMethod.GET,
       "/api/v1/todo/:id",
       this.findTodoController(new Octopus().withLogger())
+    );
+    server.addRoute(
+      HttpMethod.DELETE,
+      "/api/v1/todo/:id",
+      this.deleteTodoController(new Octopus().withLogger())
     );
   }
   private addTodoController(adapters: Octopus) {
@@ -58,6 +64,18 @@ export default class TodoController implements Controllers {
       try {
         const id = req.params.id;
         const response = await new FindTodoAction(adapters).invoke(id);
+        return res.status(Status.SUCCESS).send(response);
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
+
+  private deleteTodoController(adapters: Octopus) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const id = req.params.id;
+        const response = await new DeleteTodoAction(adapters).invoke(id);
         return res.status(Status.SUCCESS).send(response);
       } catch (error) {
         next(error);
