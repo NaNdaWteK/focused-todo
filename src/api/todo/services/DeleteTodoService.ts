@@ -1,11 +1,10 @@
 import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
-import TodoRepository from "../../../__infrastructure/repositories/TodoRepository";
 
 export default class DeleteTodoService {
-  private repo: TodoRepository;
+  private repo: Octopus["todoRepo"];
   private logger: Octopus["logger"];
-  constructor({ logger }: Octopus) {
-    this.repo = new TodoRepository();
+  constructor({ logger, todoRepo }: Octopus) {
+    this.repo = todoRepo;
     this.logger = logger;
   }
   async execute(id: string) {

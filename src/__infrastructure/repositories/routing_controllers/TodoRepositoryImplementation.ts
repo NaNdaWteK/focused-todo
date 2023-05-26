@@ -1,6 +1,5 @@
 import { BaseEntity, FindOptionsWhere } from "typeorm";
-import TodoEntity from "../../../api/todo/domain/TodoEntity";
-import { Todo } from "../../../__share/interfaces/Todo";
+import TodoEntity from "./entities/TodoEntity";
 
 export default class TodoRepositoryImplementation extends BaseEntity {
   async add(data: Partial<TodoEntity>) {

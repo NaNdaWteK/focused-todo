@@ -4,12 +4,12 @@ import {
   HttpMethod,
   HttpServer,
 } from "../../../__infrastructure/_core/interfaces/HttpServer";
+import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
 import FindUserAction from "../actions/FindUserAction";
+import AddUserAction from "../actions/AddUserAction";
 import SignTokenAction from "../actions/SignTokenAction";
 import { Status } from "../../../__share/interfaces/Status";
-import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
 import { User } from "../../../__share/interfaces/User";
-import AddUserAction from "../actions/AddUserAction";
 
 export default class LoginController implements Controllers {
   async routes(server: HttpServer) {
@@ -17,13 +17,19 @@ export default class LoginController implements Controllers {
       HttpMethod.POST,
       "/api/v1/register",
       this.postRegisterController(
-        new Octopus().withConfig().withLogger().withUUIDGenerator()
+        new Octopus()
+          .withConfig()
+          .withLogger()
+          .withUUIDGenerator()
+          .withUserRepository()
       )
     );
     server.addRoute(
       HttpMethod.POST,
       "/api/v1/login",
-      this.postLoginController(new Octopus().withConfig().withLogger())
+      this.postLoginController(
+        new Octopus().withConfig().withLogger().withUserRepository()
+      )
     );
   }
   private postRegisterController(adapters: Octopus) {

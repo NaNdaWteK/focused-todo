@@ -1,13 +1,12 @@
 import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
-import UserRepository from "../../../__infrastructure/repositories/UserRepository";
 import PasswordHasher from "../domain/PasswordHasher";
 
 export default class FindUserService {
-  private repo: UserRepository;
+  private repo: Octopus["userRepo"];
   private logger: Octopus["logger"];
   private config: Octopus["config"];
-  constructor({ logger, config }: Octopus) {
-    this.repo = new UserRepository();
+  constructor({ logger, config, userRepo }: Octopus) {
+    this.repo = userRepo;
     this.logger = logger;
     this.config = config;
   }

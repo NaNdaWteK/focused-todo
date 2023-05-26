@@ -1,5 +1,5 @@
-import ExpressServer from "../../__infrastructure/_core/adapters/ExpressServer";
+import Octopus from "../../__infrastructure/_core/adapters/Octopus";
 
 export interface Controllers {
-  routes(server: ExpressServer): Promise<void>;
+  routes(server: Octopus["server"]): Promise<void>;
 }

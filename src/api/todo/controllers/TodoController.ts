@@ -17,22 +17,24 @@ export default class TodoController implements Controllers {
     server.addAuthenticatedRoute(
       HttpMethod.POST,
       "/api/v1/todo",
-      this.addTodoController(new Octopus().withLogger().withUUIDGenerator())
+      this.addTodoController(
+        new Octopus().withLogger().withUUIDGenerator().withTodoRepository()
+      )
     );
     server.addAuthenticatedRoute(
       HttpMethod.PUT,
       "/api/v1/todo/:id",
-      this.editTodoController(new Octopus().withLogger())
+      this.editTodoController(new Octopus().withLogger().withTodoRepository())
     );
     server.addAuthenticatedRoute(
       HttpMethod.GET,
       "/api/v1/todo/:id",
-      this.findTodoController(new Octopus().withLogger())
+      this.findTodoController(new Octopus().withLogger().withTodoRepository())
     );
     server.addAuthenticatedRoute(
       HttpMethod.DELETE,
       "/api/v1/todo/:id",
-      this.deleteTodoController(new Octopus().withLogger())
+      this.deleteTodoController(new Octopus().withLogger().withTodoRepository())
     );
   }
   private addTodoController(adapters: Octopus) {

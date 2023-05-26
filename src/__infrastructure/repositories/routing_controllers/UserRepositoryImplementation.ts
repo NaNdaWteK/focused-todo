@@ -1,5 +1,5 @@
 import { BaseEntity, FindOptionsWhere } from "typeorm";
-import UserEntity from "../../../api/auth/domain/UserEntity";
+import UserEntity from "./entities/UserEntity";
 
 export default class UserRepositoryImplementation extends BaseEntity {
   async add(data: Partial<UserEntity>) {
