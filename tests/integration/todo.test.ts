@@ -2,15 +2,18 @@ import { Application } from "express";
 import request from "supertest";
 import server from "../test_support/server";
 import { Status, TodoStatus } from "../../src/__share/interfaces/Status";
+import login from "../test_support/login";
 
 describe("Todo", () => {
   let app: Application;
   let todoId: string;
+  let token: string;
   beforeEach(async () => {
     const waitForServer = await server;
     app = waitForServer.app;
     jest.restoreAllMocks();
     jest.resetModules();
+    token = await login(app, "nacho@mail.com", "secret");
   });
   afterAll(async () => {
     (await server).stop();
@@ -22,7 +25,10 @@ describe("Todo", () => {
     date: new Date(ISODate).toISOString(),
   };
   it("can be added", async () => {
-    const response = await request(app).post("/api/v1/todo").send(todo);
+    const response = await request(app)
+      .post("/api/v1/todo")
+      .set("Authorization", `Bearer ${token}`)
+      .send(todo);
     todoId = response.body.id;
     expect(response.statusCode).toBe(Status.CREATED);
     expect(todoId).toBeTruthy();
@@ -37,6 +43,7 @@ describe("Todo", () => {
     };
     const response = await request(app)
       .put(`/api/v1/todo/${todoId}`)
+      .set("Authorization", `Bearer ${token}`)
       .send(updatedTodo);
 
     expect(response.statusCode).toBe(Status.SUCCESS);
@@ -45,7 +52,9 @@ describe("Todo", () => {
     expect(response.body.date).toBe(ISODate);
   });
   it("can be find", async () => {
-    const response = await request(app).get(`/api/v1/todo/${todoId}`);
+    const response = await request(app)
+      .get(`/api/v1/todo/${todoId}`)
+      .set("Authorization", `Bearer ${token}`);
 
     expect(response.statusCode).toBe(Status.SUCCESS);
     expect(response.body.title).toBe(todo.title);
@@ -55,14 +64,16 @@ describe("Todo", () => {
   it("can be closed", async () => {
     const response = await request(app)
       .put(`/api/v1/todo/${todoId}`)
+      .set("Authorization", `Bearer ${token}`)
       .send({ status: TodoStatus.CLOSED });
 
     expect(response.statusCode).toBe(Status.SUCCESS);
     expect(response.body.status).toBe(TodoStatus.CLOSED);
   });
   it("can be delete", async () => {
-    const response = await request(app).delete(`/api/v1/todo/${todoId}`);
-
+    const response = await request(app)
+      .delete(`/api/v1/todo/${todoId}`)
+      .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(Status.SUCCESS);
     expect(response.body.affected).toBe(1);
   });

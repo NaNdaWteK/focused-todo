@@ -1,10 +1,10 @@
 import { BaseEntity, FindOptionsWhere } from "typeorm";
-import TodoEntity from "./entities/TodoEntity";
+import TodoEntity from "../../../api/todo/domain/TodoEntity";
 import { Todo } from "../../../__share/interfaces/Todo";
 
 export default class TodoRepositoryImplementation extends BaseEntity {
-  async add(data: Todo) {
-    const document = await TodoEntity.save(data);
+  async add(data: Partial<TodoEntity>) {
+    const document = (await TodoEntity.save(data)) as TodoEntity;
     return this.findOne({ id: document.id });
   }
 
@@ -16,7 +16,10 @@ export default class TodoRepositoryImplementation extends BaseEntity {
     return TodoEntity.delete(id);
   }
 
-  async updateOne(query: FindOptionsWhere<TodoEntity>, payload: Partial<Todo>) {
+  async updateOne(
+    query: FindOptionsWhere<TodoEntity>,
+    payload: Partial<TodoEntity>
+  ) {
     const updated = await TodoEntity.update(
       query.id as string,
       payload as Partial<TodoEntity>

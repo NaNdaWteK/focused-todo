@@ -18,6 +18,17 @@ const config = {
   version:
     process.env.RESTAPI_VERSION ??
     die("Environment variable \"RESTAPI_VERSION\" wasn't defined!"),
+  accessSecretToken:
+    process.env.ACCESS_TOKEN_SECRET ??
+    die("Environment variable \"ACCESS_TOKEN_SECRET\" wasn't defined!"),
+  saltSecret:
+    process.env.SALT_SECRET ??
+    die("Environment variable \"SALT_SECRET\" wasn't defined!"),
+  tokenExpirationMilliseconds:
+    process.env.TOKEN_EXPIRATION_MILLISECONDS ??
+    die(
+      "Environment variable \"TOKEN_EXPIRATION_MILLISECONDS\" wasn't defined!"
+    ),
   databaseHost:
     process.env.DATABASE_HOST ??
     die("Environment variable \"DATABASE_HOST\" wasn't defined!"),

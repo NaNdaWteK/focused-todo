@@ -14,22 +14,22 @@ import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
 
 export default class TodoController implements Controllers {
   async routes(server: HttpServer) {
-    server.addRoute(
+    server.addAuthenticatedRoute(
       HttpMethod.POST,
       "/api/v1/todo",
       this.addTodoController(new Octopus().withLogger().withUUIDGenerator())
     );
-    server.addRoute(
+    server.addAuthenticatedRoute(
       HttpMethod.PUT,
       "/api/v1/todo/:id",
       this.editTodoController(new Octopus().withLogger())
     );
-    server.addRoute(
+    server.addAuthenticatedRoute(
       HttpMethod.GET,
       "/api/v1/todo/:id",
       this.findTodoController(new Octopus().withLogger())
     );
-    server.addRoute(
+    server.addAuthenticatedRoute(
       HttpMethod.DELETE,
       "/api/v1/todo/:id",
       this.deleteTodoController(new Octopus().withLogger())

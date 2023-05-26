@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { Server } from "http";
 import { HttpMethod, HttpServer } from "../interfaces/HttpServer";
 import Octopus from "./Octopus";
+import authenticateJWT from "../../middlewares/authenticateJWT";
 
 export default class ExpressServer implements HttpServer {
   readonly app: Application;
@@ -21,6 +22,14 @@ export default class ExpressServer implements HttpServer {
 
   addRoute(method: HttpMethod, path: string, handler: RequestHandler): void {
     this.app[method](path, handler);
+  }
+
+  addAuthenticatedRoute(
+    method: HttpMethod,
+    path: string,
+    handler: RequestHandler
+  ): void {
+    this.app[method](path, authenticateJWT, handler);
   }
 
   start(port: number): void {

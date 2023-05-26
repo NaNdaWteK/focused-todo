@@ -7,7 +7,7 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { TodoStatus } from "../../../../__share/interfaces/Status";
+import { TodoStatus } from "../../../__share/interfaces/Status";
 
 @Entity("todos")
 export default class TodoEntity extends BaseEntity {

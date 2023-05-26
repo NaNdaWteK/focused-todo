@@ -8,6 +8,7 @@ import ExpressServer from "./__infrastructure/_core/adapters/ExpressServer";
 import { startCleanLogs } from "./__infrastructure/crons/cleanLogs";
 import TodoController from "./api/todo/controllers/TodoController";
 import Octopus from "./__infrastructure/_core/adapters/Octopus";
+import AuthController from "./api/auth/controllers/AuthController";
 
 export default class App {
   static async main(): Promise<ExpressServer> {
@@ -29,6 +30,7 @@ export default class App {
     octopus.server.add(logInfo);
     new HealthzController().routes(octopus.server);
     new TodoController().routes(octopus.server);
+    new AuthController().routes(octopus.server);
     startCleanLogs();
     octopus.server.add(error);
   }
