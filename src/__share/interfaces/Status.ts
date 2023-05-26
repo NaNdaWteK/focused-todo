@@ -3,3 +3,8 @@ export enum Status {
   CREATED = 201,
   SERVER_ERROR = 500,
 }
+
+export enum TodoStatus {
+  OPEN = "Open",
+  CLOSED = "Closed",
+}

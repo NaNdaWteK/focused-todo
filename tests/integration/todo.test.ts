@@ -1,7 +1,7 @@
 import { Application } from "express";
 import request from "supertest";
 import server from "../test_support/server";
-import { Status } from "../../src/__share/interfaces/Status";
+import { Status, TodoStatus } from "../../src/__share/interfaces/Status";
 
 describe("Todo", () => {
   let app: Application;
@@ -29,6 +29,7 @@ describe("Todo", () => {
     expect(response.body.title).toBe(todo.title);
     expect(response.body.level).toBe(todo.level);
     expect(response.body.date).toBe(ISODate);
+    expect(response.body.status).toBe(TodoStatus.OPEN);
   });
   it("can be updated", async () => {
     const updatedTodo = {
@@ -50,6 +51,14 @@ describe("Todo", () => {
     expect(response.body.title).toBe(todo.title);
     expect(response.body.level).toBe("hard");
     expect(response.body.date).toBe(ISODate);
+  });
+  it("can be closed", async () => {
+    const response = await request(app)
+      .put(`/api/v1/todo/${todoId}`)
+      .send({ status: TodoStatus.CLOSED });
+
+    expect(response.statusCode).toBe(Status.SUCCESS);
+    expect(response.body.status).toBe(TodoStatus.CLOSED);
   });
   it("can be delete", async () => {
     const response = await request(app).delete(`/api/v1/todo/${todoId}`);

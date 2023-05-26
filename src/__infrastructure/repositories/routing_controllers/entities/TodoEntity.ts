@@ -7,6 +7,7 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { TodoStatus } from "../../../../__share/interfaces/Status";
 
 @Entity("todos")
 export default class TodoEntity extends BaseEntity {
@@ -21,6 +22,13 @@ export default class TodoEntity extends BaseEntity {
 
   @Column()
     date: string;
+
+  @Column({
+    type: "enum",
+    enum: TodoStatus,
+    default: TodoStatus.OPEN,
+  })
+    status: TodoStatus;
 
   @CreateDateColumn()
     createdAt: Date;
