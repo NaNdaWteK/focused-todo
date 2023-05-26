@@ -7,7 +7,7 @@ export default class AddTodoAction {
   constructor(adapters: Octopus) {
     this.adapters = adapters;
   }
-  async invoke(payload: Todo) {
-    return new AddTodoService(this.adapters).execute(payload);
+  async invoke(userId: string, payload: Todo) {
+    return new AddTodoService(this.adapters).execute(userId, payload);
   }
 }

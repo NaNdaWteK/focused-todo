@@ -10,8 +10,8 @@ export default class AddTodoService {
     this.uuid = uuid;
     this.repo = todoRepo;
   }
-  async execute(payload: Todo) {
-    const document = { ...payload, id: this.uuid.generateUUID() };
+  async execute(userId: string, payload: Todo) {
+    const document = { ...payload, id: this.uuid.generateUUID(), userId };
     this.logger.info("Executing create todo service", { document });
 
     return this.repo.add(document);

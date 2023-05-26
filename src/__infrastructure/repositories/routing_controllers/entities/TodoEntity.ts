@@ -15,6 +15,9 @@ export default class TodoEntity extends BaseEntity {
     id: string;
 
   @Column()
+    userId: string;
+
+  @Column()
     title: string;
 
   @Column()

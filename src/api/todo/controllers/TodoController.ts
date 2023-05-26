@@ -41,7 +41,10 @@ export default class TodoController implements Controllers {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const payload: Todo = req.body;
-        const response = await new AddTodoAction(adapters).invoke(payload);
+        const response = await new AddTodoAction(adapters).invoke(
+          req.user?.id,
+          payload
+        );
         return res.status(Status.CREATED).send(response);
       } catch (error) {
         next(error);

@@ -3,6 +3,7 @@ import request from "supertest";
 import server from "../test_support/server";
 import { Status, TodoStatus } from "../../src/__share/interfaces/Status";
 import login from "../test_support/login";
+import { JwtPayload, decode } from "jsonwebtoken";
 
 describe("Todo", () => {
   let app: Application;
@@ -29,10 +30,12 @@ describe("Todo", () => {
       .post("/api/v1/todo")
       .set("Authorization", `Bearer ${token}`)
       .send(todo);
+    const { id } = decode(token) as JwtPayload;
     todoId = response.body.id;
     expect(response.statusCode).toBe(Status.CREATED);
     expect(todoId).toBeTruthy();
     expect(response.body.title).toBe(todo.title);
+    expect(response.body.userId).toBe(id);
     expect(response.body.level).toBe(todo.level);
     expect(response.body.date).toBe(ISODate);
     expect(response.body.status).toBe(TodoStatus.OPEN);
