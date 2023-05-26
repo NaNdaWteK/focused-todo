@@ -1,4 +1,4 @@
-import { scrypt, createHash } from "crypto";
+import { scrypt } from "crypto";
 import { promisify } from "node:util";
 import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
 
