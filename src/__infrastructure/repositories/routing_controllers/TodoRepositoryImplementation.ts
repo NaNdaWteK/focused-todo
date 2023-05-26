@@ -11,6 +11,10 @@ export default class TodoRepositoryImplementation extends BaseEntity {
     return TodoEntity.findOne({ where: query });
   }
 
+  async findAll(query: FindOptionsWhere<TodoEntity>) {
+    return TodoEntity.find({ where: query });
+  }
+
   async deleteOne(id: string) {
     return TodoEntity.delete(id);
   }

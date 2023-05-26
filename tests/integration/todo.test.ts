@@ -9,12 +9,15 @@ describe("Todo", () => {
   let app: Application;
   let todoId: string;
   let token: string;
+  let userId: string;
   beforeEach(async () => {
     const waitForServer = await server;
     app = waitForServer.app;
     jest.restoreAllMocks();
     jest.resetModules();
     token = await login(app, "nacho@mail.com", "secret");
+    const decoded = decode(token) as JwtPayload;
+    userId = decoded.id;
   });
   afterAll(async () => {
     (await server).stop();
@@ -30,12 +33,11 @@ describe("Todo", () => {
       .post("/api/v1/todo")
       .set("Authorization", `Bearer ${token}`)
       .send(todo);
-    const { id } = decode(token) as JwtPayload;
     todoId = response.body.id;
     expect(response.statusCode).toBe(Status.CREATED);
     expect(todoId).toBeTruthy();
     expect(response.body.title).toBe(todo.title);
-    expect(response.body.userId).toBe(id);
+    expect(response.body.userId).toBe(userId);
     expect(response.body.level).toBe(todo.level);
     expect(response.body.date).toBe(ISODate);
     expect(response.body.status).toBe(TodoStatus.OPEN);
@@ -63,6 +65,17 @@ describe("Todo", () => {
     expect(response.body.title).toBe(todo.title);
     expect(response.body.level).toBe("hard");
     expect(response.body.date).toBe(ISODate);
+  });
+  it("can be find all by user", async () => {
+    const response = await request(app)
+      .get("/api/v1/todo")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.statusCode).toBe(Status.SUCCESS);
+    expect(response.body[response.body.length - 1].title).toBe(todo.title);
+    expect(response.body[response.body.length - 1].level).toBe("hard");
+    expect(response.body[response.body.length - 1].date).toBe(ISODate);
+    expect(response.body[response.body.length - 1].userId).toBe(userId);
   });
   it("can be closed", async () => {
     const response = await request(app)

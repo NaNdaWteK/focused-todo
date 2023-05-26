@@ -11,6 +11,7 @@ import DeleteTodoAction from "../actions/DeleteTodoAction";
 import { Todo } from "../../../__share/interfaces/Todo";
 import { Status } from "../../../__share/interfaces/Status";
 import Octopus from "../../../__infrastructure/_core/adapters/Octopus";
+import FindAllTodoAction from "../actions/FindAllTodoAction";
 
 export default class TodoController implements Controllers {
   async routes(server: HttpServer) {
@@ -32,6 +33,13 @@ export default class TodoController implements Controllers {
       this.findTodoController(new Octopus().withLogger().withTodoRepository())
     );
     server.addAuthenticatedRoute(
+      HttpMethod.GET,
+      "/api/v1/todo/",
+      this.findAllTodoController(
+        new Octopus().withLogger().withTodoRepository()
+      )
+    );
+    server.addAuthenticatedRoute(
       HttpMethod.DELETE,
       "/api/v1/todo/:id",
       this.deleteTodoController(new Octopus().withLogger().withTodoRepository())
@@ -41,8 +49,9 @@ export default class TodoController implements Controllers {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const payload: Todo = req.body;
+        const userId = req.user?.id;
         const response = await new AddTodoAction(adapters).invoke(
-          req.user?.id,
+          userId,
           payload
         );
         return res.status(Status.CREATED).send(response);
@@ -69,6 +78,18 @@ export default class TodoController implements Controllers {
       try {
         const id = req.params.id;
         const response = await new FindTodoAction(adapters).invoke(id);
+        return res.status(Status.SUCCESS).send(response);
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
+
+  private findAllTodoController(adapters: Octopus) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const userId = req.user?.id;
+        const response = await new FindAllTodoAction(adapters).invoke(userId);
         return res.status(Status.SUCCESS).send(response);
       } catch (error) {
         next(error);
